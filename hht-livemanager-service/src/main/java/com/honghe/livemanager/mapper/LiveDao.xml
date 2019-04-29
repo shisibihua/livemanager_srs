@@ -1,0 +1,585 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.honghe.livemanager.dao.LiveDao">
+    <resultMap id="BaseResultMap" type="com.honghe.livemanager.entity.Live">
+        <id column="live_id" jdbcType="INTEGER" property="liveId" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="type" jdbcType="VARCHAR" property="type" />
+        <result column="viewers_number" jdbcType="INTEGER" property="number" />
+        <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+        <result column="stream_code" jdbcType="VARCHAR" property="streamCode" />
+        <result column="details" jdbcType="VARCHAR" property="details" />
+        <result column="cover" jdbcType="VARCHAR" property="cover" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="is_del" jdbcType="INTEGER" property="isDel" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="actual_begin_time" jdbcType="TIMESTAMP" property="actualBeginTime" />
+        <result column="actual_end_time" jdbcType="TIMESTAMP" property="actualEndTime" />
+        <result column="push_client_ip" jdbcType="VARCHAR" property="pushClientIp" />
+        <result column="video_frame_rate" jdbcType="INTEGER" property="videoFrameRate" />
+        <result column="audio_frame_rate" jdbcType="INTEGER" property="audioFrameRate" />
+        <result column="bit_rate" jdbcType="INTEGER" property="bitRate" />
+        <result column="bandwidth" jdbcType="REAL" property="bandWidth" />
+        <result column="traffic_value" jdbcType="REAL" property="trafficValue" />
+        <result column="license_code" jdbcType="VARCHAR" property="licenseCode" />
+        <result column="teacher_id" jdbcType="VARCHAR" property="teacherId" />
+        <result column="teacher_name" jdbcType="VARCHAR" property="teacherName" />
+        <result column="pic_count" jdbcType="INTEGER" property="picCount" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        title,type,begin_time,end_time,stream_code,details,create_time,status,is_del,
+        license_code,hitevision_account,speaker_name,school_name,viewers_number
+    </sql>
+
+    <sql id="Base_Property_List">
+        live_id as liveId,title,type,viewers_number as viewersNumber,DATE_FORMAT(begin_time,'%Y-%m-%d %H:%i:%s') as beginTime,
+        DATE_FORMAT(end_time,'%Y-%m-%d %H:%i:%s') as endTime,DATE_FORMAT(actual_begin_time,'%Y-%m-%d %H:%i:%s') as actualBeginTime,
+        DATE_FORMAT(actual_end_time,'%Y-%m-%d %H:%i:%s') as actualEndTime,TIMESTAMPDIFF(SECOND,actual_begin_time,end_time) as planTimeLength,
+        TIMESTAMPDIFF(SECOND,actual_begin_time,actual_end_time) as timeLength,push_client_ip as pushClientIp,
+        video_frame_rate as videoFrameRate,bit_rate as bitRate,bandwidth as bandWidth,
+        traffic_value as trafficValue,stream_code as streamCode,details,cover,
+        DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') as createTime,status,is_del as isDel,
+        speaker_name as speakerName,school_name as name,hitevision_account as hitevisionAccount,
+        license_code as licenseCode,pic_count as picCount
+    </sql>
+
+    <insert id="addLive" parameterType="com.honghe.livemanager.entity.Live" useGeneratedKeys="true" keyProperty="liveId">
+        insert into
+          live_program(<include refid="Base_Column_List"/>)
+        values (
+            #{title},
+            #{type},
+            #{beginTime},
+            #{endTime},
+            #{streamCode},
+            #{details},
+            #{createTime},
+            #{status},
+            #{isDel},
+            #{licenseCode},
+            #{hitevisionAccount},
+            #{speakerName},
+            #{schoolName},
+            0
+        )
+    </insert>
+    <insert id="insertBatch" parameterType="com.honghe.livemanager.entity.Live" useGeneratedKeys="true" keyProperty="liveId">
+        insert into
+        live_program( title,type,begin_time,end_time,stream_code,details,create_time,status,is_del,
+        license_code,school_name,viewers_number,bandwidth,traffic_value,pic_count)  values
+        <foreach collection ="list" item="item" index= "index" separator =",">
+            (
+            #{item.title},
+            #{item.type},
+            #{item.beginTime},
+            #{item.endTime},
+            #{item.streamCode},
+            #{item.details},
+            #{item.createTime},
+            #{item.status},
+            #{item.isDel},
+            #{item.licenseCode},
+            #{item.schoolName},
+            #{item.number},
+            #{item.bandWidth},
+            #{item.trafficValue},
+            #{item.picCount}
+
+            )
+         </foreach >
+    </insert>
+    <select id="getLivingCount" resultType="java.lang.Integer">
+        select count(*)
+        from  live_program
+        where status=1 and is_del=0;
+    </select>
+    <select id="getLiveById" parameterType="java.lang.Integer" resultType="java.util.Map">
+        select
+             <include refid="Base_Property_List"/>
+        from live_program
+        where
+            live_id=#{liveId}
+    </select>
+    <select id="getEntityLiveById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Property_List"/>
+        from live_program
+        where
+        live_id=#{liveId}
+    </select>
+    <select id="getLiveByStreamCode" parameterType="java.lang.String" resultType="java.util.Map">
+        select
+            <include refid="Base_Property_List"/>
+        from live_program
+        where
+            stream_code=#{streamCode}
+    </select>
+    <select id="selectBySchoolName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Property_List"/>
+        from live_program
+        where
+        school_name=#{schoolName} AND (now() BETWEEN begin_time AND  end_time OR begin_time &gt;= now());
+    </select>
+
+    <select id="getLiveEntityByStreamCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+          *
+        from live_program
+        where
+        stream_code=#{streamCode}
+    </select>
+    <update id="updateLive" parameterType="com.honghe.livemanager.entity.Live">
+        update
+           live_program
+        <set>
+            <if test="title!=null and title!=''">title=#{title},</if>
+            <if test="beginTime!=null">begin_time=#{beginTime},</if>
+            <if test="endTime!=null">end_time=#{endTime},</if>
+            <if test="details!=null and details!=''">details=#{details},</if>
+            <if test="speakerName!=null and speakerName!=''">speaker_name=#{speakerName},</if>
+            <if test="type!=null">type=#{type},</if>
+            <if test="createTime!=null">create_time=#{createTime},</if>
+        </set>
+        where
+            live_id=#{liveId}
+    </update>
+    <update id="updateLiveHistory" parameterType="java.util.Map">
+        update
+             live_program
+        <set>
+            <if test="live.pushClientIp!=null and live.pushClientIp!=''">push_client_ip=#{live.pushClientIp},</if>
+            <if test="live.videoFrameRate!=null">video_frame_rate=#{live.videoFrameRate},</if>
+            <if test="live.bitRate!=null">bit_rate=#{live.bitRate},</if>
+            <if test="live.bandWidth!=null">bandwidth=#{live.bandWidth},</if>
+            <if test="live.viewersNumber!=null">viewers_number=#{live.viewersNumber},</if>
+            <if test="live.trafficValue!=null">traffic_value=#{live.trafficValue},</if>
+        </set>
+        where
+            live_id=#{live.liveId}
+    </update>
+    <update id="updateLiveByStreamCode" parameterType="com.honghe.livemanager.entity.Live">
+        update
+            live_program
+        <set>
+            <if test="actualBeginTime!=null">actual_begin_time=#{actualBeginTime},</if>
+            <if test="actualEndTime!=null or actualEndTime==null">actual_end_time=#{actualEndTime},</if>
+            <if test="isDel!=1">is_del=#{isDel},</if>
+            <if test="status!=4">status=#{status},</if>
+            <if test="picCount!=null and picCount!=0">pic_count =pic_count+#{picCount},</if>
+            <if test="pushClientIp!=null and pushClientIp!=''">push_client_ip=#{pushClientIp},</if>
+            <if test="videoFrameRate!=null">video_frame_rate=#{videoFrameRate},</if>
+            <if test="bitRate!=null">bit_rate=#{bitRate},</if>
+            <if test="bandWidth!=null">bandwidth=#{bandWidth},</if>
+            <if test="number!=null">viewers_number=#{number},</if>
+            <if test="trafficValue!=null">traffic_value=#{trafficValue},</if>
+        </set>
+        where
+            stream_code=#{streamCode}
+    </update>
+    <update id="updateLivePicUrl" parameterType="java.lang.String">
+        update live_program set cover=#{picUrl} where stream_code=#{streamCode}
+    </update>
+
+    <update id="updateStatusBatch" parameterType="java.util.List">
+        update live_program set is_del=1,status=4
+        where live_id in
+        <foreach index="index" item="item" collection="list" open="(" separator="," close=")">
+            #{item.liveId}
+        </foreach>
+    </update>
+
+
+    <update id="deleteLiveById" parameterType="java.lang.Integer">
+        update
+            live_program
+        <set>
+            <if test="isEnable!=null">
+                <choose>
+                    <when test="isEnable==1">
+                        is_del=1,status=4
+                    </when>
+                    <otherwise>
+                        is_del=
+                            case
+                                  when is_del=1 then 0
+                                  else is_del
+                            end,
+                        status=
+                            case
+                                 when status=4 then 2
+                                 else status
+                            end
+                    </otherwise>
+                </choose>
+            </if>
+        </set>
+        where
+            live_id=#{liveId}
+    </update>
+    <select id="getLiveListByPage" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+            <choose>
+                <when test="params.pageFlag">
+                    live_id as liveId,title,viewers_number as viewersNumber,DATE_FORMAT(begin_time,'%Y-%m-%d %H:%i:%s') as beginTime,
+                    DATE_FORMAT(end_time,'%Y-%m-%d %H:%i:%s') as endTime,DATE_FORMAT(actual_begin_time,'%Y-%m-%d %H:%i:%s') as actualBeginTime,
+                    DATE_FORMAT(actual_end_time,'%Y-%m-%d %H:%i:%s') as actualEndTime,stream_code as streamCode,speaker_name as speakerName,
+                    DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') as createTime,status,is_del as isDel,school_name as name,push_client_ip as pushClientIp,
+                    video_frame_rate as videoFrameRate,bit_rate as bitRate,bandwidth as bandWidth,traffic_value as trafficValue
+                </when>
+                <otherwise>
+                    count(0) as totalCount
+                </otherwise>
+            </choose>
+        from live_program
+        where
+        <if test="params.status!=null">
+            (
+            <choose>
+                <when test="params.status==1">
+                    is_del=0 and status=1
+                </when>
+                <when test="params.status==2">
+                    is_del=0 and status=2
+                </when>
+                <when test="params.status==3">
+                    (
+                        status=3
+                    or
+                        (status=2 and now()>end_time)
+                    )
+                    and is_del=0
+                </when>
+                <when test="params.status==4">
+                    status=4
+                </when>
+                <otherwise>
+                    (is_del=0 and (status=1 or now() between begin_time and end_time))
+                    or (is_del=0 and begin_time>now())
+                    or
+                    (
+                        (
+                            status=3
+                        or
+                            (status=2 and now()>end_time)
+                        )
+                    and is_del=0
+                    )
+                    or ( status=4 )
+                </otherwise>
+            </choose>
+            )
+        </if>
+        <if test="params.searchTime!=null and params.searchTime!=''">
+            and #{params.searchTime}
+            BETWEEN begin_time AND end_time
+        </if>
+        <if test="params.currentDate!=null and params.currentDate!=''">
+            <choose>
+                <when test="params.beginTime==null or params.beginTime=='' or params.endTime==null or params.endTime==''">
+                    and (begin_time like concat(#{params.currentDate},'%') or end_time like concat(#{params.currentDate}, '%'))
+                </when>
+                <otherwise>
+                    and begin_time>=#{params.beginTime} and end_time&lt;=#{params.endTime}
+                </otherwise>
+            </choose>
+        </if>
+        <if test="params.pageFlag">
+            order by status asc,begin_time asc limit #{params.start},#{params.pageSize}
+        </if>
+    </select>
+
+    <select id="getLiveList" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+            live_id as liveId,title,viewers_number as viewersNumber,DATE_FORMAT(begin_time,'%Y-%m-%d %H:%i:%s') as beginTime,
+            DATE_FORMAT(end_time,'%Y-%m-%d %H:%i:%s') as endTime,DATE_FORMAT(actual_begin_time,'%Y-%m-%d %H:%i:%s') as actualBeginTime,
+            DATE_FORMAT(actual_end_time,'%Y-%m-%d %H:%i:%s') as actualEndTime,stream_code as streamCode,speaker_name as speakerName,
+            DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') as createTime,status,is_del as isDel,school_name as name,push_client_ip as pushClientIp,
+            video_frame_rate as videoFrameRate,bit_rate as bitRate,bandwidth as bandWidth,traffic_value as trafficValue
+        from live_program
+        where
+        <if test="params.status!=null">
+            (
+            <choose>
+                <when test="params.status==1">
+                    is_del=0 and status=1
+                </when>
+                <when test="params.status==2">
+                    is_del=0 and status=2
+                </when>
+                <when test="params.status==3">
+                    (
+                    status=3
+                    or
+                    (status=2 and now()>end_time)
+                    )
+                    and is_del=0
+                </when>
+                <when test="params.status==4">
+                    status=4
+                </when>
+                <otherwise>
+                    (is_del=0 and (status=1 or now() between begin_time and end_time))
+                    or (is_del=0 and begin_time>now())
+                    or
+                    (
+                    (
+                    status=3
+                    or
+                    (status=2 and now()>end_time)
+                    )
+                    and is_del=0
+                    )
+                    or ( status=4 )
+                </otherwise>
+            </choose>
+            )
+        </if>
+        <if test="params.searchTime!=null and params.searchTime!=''">
+            and #{params.searchTime}
+            BETWEEN begin_time AND end_time
+        </if>
+        <if test="params.currentDate!=null and params.currentDate!=''">
+            <choose>
+                <when test="params.beginTime==null or params.beginTime=='' or params.endTime==null or params.endTime==''">
+                    and (begin_time like concat(#{params.currentDate},'%') or end_time like concat(#{params.currentDate}, '%'))
+                </when>
+                <otherwise>
+                    and begin_time>=#{params.beginTime} and end_time&lt;=#{params.endTime}
+                </otherwise>
+            </choose>
+        </if>
+    </select>
+    <select id="getLiveCountByTime" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select
+            count(*)
+        from
+            live_program
+        WHERE
+        (
+            (
+                #{beginTime}
+                BETWEEN begin_time AND end_time
+            )
+            OR
+            (
+                #{endTime}
+                BETWEEN begin_time AND end_time
+            )
+            OR
+            (
+                #{beginTime} &lt;= begin_time
+                AND
+                #{endTime} &gt;= end_time
+            )
+        )
+        AND is_del = 0 and status!=3
+    </select>
+
+    <select id="getLiveNumByDate" parameterType="java.lang.String" resultType="java.util.Map">
+          select DATE_FORMAT(begin_time,'%Y-%m-%d') as day,count(*) as liveNum
+          FROM live_program
+          where begin_time BETWEEN #{beginTime} AND #{endTime}
+          and status is not null
+          GROUP BY DATE_FORMAT(begin_time,'%Y-%m-%d')
+          ORDER BY begin_time asc
+    </select>
+
+    <select id="getAllLiveNumByDate" resultType="java.util.Map">
+        select begin_time as beginTime,end_time as endTime
+        from live_program
+        where begin_time like concat(#{currentDate},'%') or end_time like concat(#{currentDate},'%')
+        order by begin_time asc
+    </select>
+    <!--统计接口，每天定时存数据。-->
+  <select id="selectByDate" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select count(0) as live_count, sum(traffic_value) as traffic_value,
+        sum(viewers_number) as viewers_number,sum(pic_count) as pic_count
+        from live_program
+        where begin_time >= #{beginTime} and end_time &lt;= #{endTime}
+    </select>
+    <select id="getOverLiveList" resultMap="BaseResultMap">
+        select DISTINCT live_id,stream_code
+        from live_program
+        where
+        end_time &lt; now() and is_del=0 and status!=3
+    </select>
+    <update id="updateLiveStatus">
+        update live_program
+        set status=3
+        where live_id in
+        <foreach index="index" item="item" collection="idsArr" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="getTrafficValueStatisticList" parameterType="java.lang.String" resultType="java.util.Map">
+        select schoolName,trafficValue
+        from
+        (
+            select school_name as schoolName,sum(traffic_value) as trafficValue
+            from live_program
+            where begin_time>=#{beginTime} and end_time&lt;=#{endTime}
+            group by school_name
+        )as live
+        order by trafficValue desc
+        limit 5
+    </select>
+    <select id="getViewersNumberStatisticList" parameterType="java.lang.String" resultType="java.util.Map">
+        select schoolName,viewersNumber
+        from
+        (
+            select school_name as schoolName,sum(viewers_number) as viewersNumber
+            from live_program
+            where begin_time>=#{beginTime} and end_time&lt;=#{endTime}
+            group by school_name
+        )as live
+        order by viewersNumber desc
+        limit 5
+    </select>
+    <select id="getPicCountStatisticList" parameterType="java.lang.String" resultType="java.util.Map">
+        select schoolName,screenShotPic
+        from
+        (
+            select school_name as schoolName,sum(pic_count) as screenShotPic
+            from live_program
+            where begin_time>=#{beginTime} and end_time&lt;=#{endTime}
+            group by school_name
+        )as live
+        order by screenShotPic desc
+        limit 5
+    </select>
+    <select id="getLiveStatisticCount" parameterType="java.lang.String" resultType="java.util.Map">
+        select sum(traffic_value) as trafficValue,sum(viewers_number) as viewersNumber,sum(pic_count) as screenShotPic
+        from
+        live_program
+        where begin_time>=#{beginTime} and end_time&lt;=#{endTime}
+    </select>
+
+    <select id="getLiveStatisticListByPage" resultType="java.util.Map">
+        select
+            <choose>
+                <when test="pageFlag">
+                    schoolName,liveCount,trafficValue,viewersNumber,screenShotPic
+                </when>
+                <otherwise>
+                    count(0) as totalCount
+                </otherwise>
+            </choose>
+        from
+        (
+            select school_name as schoolName,count(live_id) as liveCount,sum(traffic_value) as trafficValue,
+            sum(viewers_number) as viewersNumber,sum(pic_count) as screenShotPic
+            from live_program
+            where begin_time>=#{beginTime} and end_time&lt;=#{endTime}
+            <if test="schoolName!=null and schoolName!=''">
+                and school_name like concat('%',#{schoolName},'%')
+            </if>
+             group by school_name
+            <if test="orderType!=null and orderType!=''">
+                <choose>
+                    <when test="orderType=='countOrder'">
+                        order by liveCount
+                    </when>
+                    <when test="orderType=='screenShotPicOrder'">
+                        order by screenShotPic
+                    </when>
+                    <when test="orderType=='trafficValueOrder'">
+                        order by trafficValue
+                    </when>
+                    <when test="orderType=='viewersNumberOrder'">
+                        order by viewersNumber
+                    </when>
+                    <otherwise>
+                        order by liveCount
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="sort!=null and sort!=''">
+                <choose>
+                    <when test="sort=='asc'">
+                        asc
+                    </when>
+                    <otherwise>
+                        desc
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="orderType==null or orderType=='' or sort==null or sort==''">
+                order by liveCount desc
+            </if>
+        )as live
+        <if test="pageFlag">
+            limit #{start},#{pageSize}
+        </if>
+    </select>
+    <select id="getLiveStatisticList" resultType="java.util.Map">
+        select
+          schoolName,liveCount,trafficValue,viewersNumber,screenShotPic
+        from
+        (
+        select school_name as schoolName,count(live_id) as liveCount,sum(traffic_value) as trafficValue,
+        sum(viewers_number) as viewersNumber,sum(pic_count) as screenShotPic
+        from live_program
+        where begin_time>=#{beginTime} and end_time&lt;=#{endTime}
+        <if test="schoolName!=null and schoolName!=''">
+            and school_name like concat('%',#{schoolName},'%')
+        </if>
+        group by school_name
+        <if test="orderType!=null and orderType!=''">
+            <choose>
+                <when test="orderType=='countOrder'">
+                    order by liveCount
+                </when>
+                <when test="orderType=='screenShotPicOrder'">
+                    order by screenShotPic
+                </when>
+                <when test="orderType=='trafficValueOrder'">
+                    order by trafficValue
+                </when>
+                <when test="orderType=='viewersNumberOrder'">
+                    order by viewersNumber
+                </when>
+                <otherwise>
+                    order by liveCount
+                </otherwise>
+            </choose>
+        </if>
+        <if test="sort!=null and sort!=''">
+            <choose>
+                <when test="sort=='asc'">
+                    asc
+                </when>
+                <otherwise>
+                    desc
+                </otherwise>
+            </choose>
+        </if>
+        <if test="orderType==null or orderType=='' or sort==null or sort==''">
+            order by liveCount desc
+        </if>
+        )as live
+    </select>
+
+    <select id="getCurrentAllWaitingLives" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select <include refid="Base_Property_List"/>
+        from live_program
+        where begin_time>=concat(#{currentDate},' 00:00:00')
+        and begin_time&lt;=concat(#{currentDate},' 23:59:59') and is_del=0 and controller_status is null
+    </select>
+    <select id="getCurrentAllOverLives" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select <include refid="Base_Property_List"/>
+        from live_program
+        where now()>=end_time and begin_time>=concat(#{currentDate},' 00:00:00')
+        and begin_time&lt;=concat(#{currentDate},' 23:59:59') and is_del=0 and controller_status is null
+    </select>
+
+    <update id="updateControllerStatus">
+        update live_program set controller_status=#{controllerStatus} where stream_code in
+        <foreach index="index" item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

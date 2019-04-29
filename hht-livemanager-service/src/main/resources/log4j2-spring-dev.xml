@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="DEBUG">
+<!--开发环境文件-->
+        <Loggers>
+                <!--additivity 是否在父级中打印-->
+                <logger name="com.honghe" level="DEBUG" additivity="false">
+                        <AppenderRef ref="LiveManagerInfo" />
+                        <AppenderRef ref="LiveManagerDebug" />
+                        <AppenderRef ref="LiveManagerError" />
+                        <AppenderRef ref="Console" />
+                </logger>
+                <logger name="org" level="ERROR" additivity="true">
+                        <AppenderRef ref="Console" />
+                </logger>
+                <logger name="com.honghe.livemanager.dao" level="DEBUG" additivity="true">
+                        <AppenderRef ref="sql" />
+                </logger>
+
+
+                <Root level="DEBUG">
+                        <AppenderRef ref="Console" />
+                </Root>
+        </Loggers>
+
+        <Appenders>
+                <Console name="Console" target="SYSTEM_OUT" follow="true">
+                        <PatternLayout>
+                                <Pattern>[%l] [%t] [%-4r] [%d{yyyy-MM-dd HH:mm:ss,SSS}] [%p] \: %m%n</Pattern>
+                        </PatternLayout>
+                </Console>
+
+                <RollingFile name="LiveManagerDebug" fileName="liveService-log/liveServiceDebug.log" filePattern="livemanager-log/liveServiceDebug-%d{yyyy-MM-dd}-%i.log.gz">
+                        <Filters>
+                                <ThresholdFilter level="info" onMatch="DENY" onMismatch="NEUTRAL"/>
+                                <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>                           </Filters>
+                        <PatternLayout>
+                                <Pattern>[%l] [%t] [%-4r] [%d{yyyy-MM-dd HH:mm:ss,SSS}] [%p] \: %m%n</Pattern>
+                        </PatternLayout>
+                        <Policies>
+                                <SizeBasedTriggeringPolicy size="20 MB" />
+                        </Policies>
+                </RollingFile>
+
+                <RollingFile name="LiveManagerError" fileName="liveService-log/liveServiceError.log" filePattern="livemanager-log/liveServiceError-%d{yyyy-MM-dd}-%i.log.gz">
+                        <Filters>
+                                <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>                             </Filters>
+                        <PatternLayout>
+                                <Pattern>[%l] [%t] [%-4r] [%d{yyyy-MM-dd HH:mm:ss,SSS}] [%p] \: %m%n</Pattern>
+                        </PatternLayout>
+                        <Policies>
+                                <SizeBasedTriggeringPolicy size="20 MB" />
+                        </Policies>
+
+
+                </RollingFile>
+
+
+                <RollingFile name="LiveManagerInfo" fileName="liveService-log/liveServiceInfo.log" filePattern="livemanager-log/liveServiceInfo-%d{yyyy-MM-dd}-%i.log.gz">
+                        <Filters>
+                                <ThresholdFilter level="warn" onMatch="DENY" onMismatch="NEUTRAL"/>
+                                <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>                        </Filters>
+                        <PatternLayout>
+                                <Pattern>[%l] [%t] [%-4r] [%d{yyyy-MM-dd HH:mm:ss,SSS}] [%p] \: %m%n</Pattern>
+                        </PatternLayout>
+                        <Policies>
+                                <SizeBasedTriggeringPolicy size="20 MB" />
+                        </Policies>
+                        <!--每天早上5点进行检查删除 默认每天生成7个文件-->
+                        <CronTriggeringPolicy schedule="0 0 5 * * ? "/>
+                        <DefaultRolloverStrategy>
+                                <Delete basePath="livemanager-log" maxDepth="1">
+                                        <IfFileName glob="liveService*.log.gz" />
+                                        <!--删除15天前的文件-->
+                                        <IfLastModified age="15d" />
+                                </Delete>
+
+                        </DefaultRolloverStrategy>
+                </RollingFile>
+
+
+
+                <RollingFile name="sql" fileName="sql-log/liveService-sql.log" filePattern="sql-log/liveService-%d{yyyy-MM-dd}-%i.log.gz">
+                        <Filters>
+                                <ThresholdFilter level="DEBUG"/>
+                        </Filters>
+                        <PatternLayout>
+                                <Pattern>[%l] [%t] [%-4r] [%d{yyyy-MM-dd HH:mm:ss,SSS}] [%p] \: %m%n</Pattern>
+                        </PatternLayout>
+                        <Policies>
+                                <!-- 启动创建新的日志文件 <OnStartupTriggeringPolicy />-->
+                                <SizeBasedTriggeringPolicy size="20 MB" />
+                                <!-- 记录日志的时间间隔<TimeBasedTriggeringPolicy />-->
+                        </Policies>
+                        <!--每天早上5点进行检查删除 默认每天生成7个文件-->
+                        <CronTriggeringPolicy schedule="0 0 5 * * ? "/>
+                        <DefaultRolloverStrategy>
+                                <Delete basePath="sql-log" maxDepth="1">
+                                        <IfFileName glob="liveService-*.log.gz" />
+                                        <!--删除15天前的文件-->
+                                        <IfLastModified age="15d" />
+                                </Delete>
+
+                        </DefaultRolloverStrategy>
+                </RollingFile>
+        </Appenders>
+</Configuration>

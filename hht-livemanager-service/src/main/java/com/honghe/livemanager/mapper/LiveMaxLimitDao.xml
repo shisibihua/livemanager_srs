@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honghe.livemanager.dao.LiveMaxLimitDao">
+  <resultMap id="BaseResultMap" type="com.honghe.livemanager.entity.LiveMaxLimit">
+    <id column="live_max_limit_id" jdbcType="INTEGER" property="id" />
+    <result column="max_count" jdbcType="INTEGER" property="maxCount" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    live_max_limit_id, max_count, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from live_max_limit
+    where live_max_limit_id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="getMaxCount"  resultType="java.lang.Integer">
+    select
+    max_count
+    from live_max_limit  limit 1;
+  </select>
+  <update id="updateMaxCount" parameterType="com.honghe.livemanager.entity.LiveMaxLimit">
+    update live_max_limit
+    set max_count = #{maxCount,jdbcType=INTEGER}
+  </update>
+</mapper>

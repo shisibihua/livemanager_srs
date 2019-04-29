@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.honghe.livemanager.dao.LiveSysLogDao">
+    <resultMap id="BaseResultMap" type="com.honghe.livemanager.entity.LiveSysLog">
+        <id column="live_sys_log_id" jdbcType="INTEGER" property="logId" />
+        <result column="level" jdbcType="VARCHAR" property="level" />
+        <result column="message" jdbcType="VARCHAR" property="message" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+        <result column="source" jdbcType="VARCHAR" property="source" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        live_sys_log_id,level,message,description,source,create_time
+    </sql>
+
+    <insert id="addSysLog" parameterType="com.honghe.livemanager.entity.LiveSysLog"
+            useGeneratedKeys="true" keyProperty="logId">
+         insert into live_sys_log(level,message,description,source,create_time)
+         values(
+            #{level},
+            #{message},
+            #{description},
+            #{source},
+            #{createTime}
+        )
+    </insert>
+
+    <insert id="addSysLogBatch" parameterType="java.util.List"
+            useGeneratedKeys="true" keyProperty="logId">
+        insert into live_sys_log(level,message,description,source,create_time)
+        values
+        <foreach collection ="list" item="item" index= "index" separator =",">
+            (#{item.level},
+            #{item.message},
+            #{item.description},
+            #{item.source},
+            #{item.createTime}
+            )
+        </foreach >
+
+    </insert>
+
+
+    <select id="getLogByPage" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from live_sys_log
+        where 1=1
+            <if test="level!=null and level!=''">
+                and level=#{level}
+            </if>
+            <if test="beginTime!=null and beginTime!='' and endTime!=null and endTime!=''">
+                and create_time between #{beginTime} and #{endTime}
+            </if>
+        order by create_time desc
+        <if test="pageFlag">
+            limit #{start},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getSysLogSum" resultType="java.lang.Integer">
+        select count(live_sys_log_id) as sysCount from live_sys_log
+    </select>
+    <select id="getLogCountByPage" resultType="java.lang.Integer">
+        select count(*)
+        from live_sys_log
+        where 1=1
+        <if test="level!=null and level!=''">
+            and level=#{level}
+        </if>
+        <if test="beginTime!=null and beginTime!='' and endTime!=null and endTime!=''">
+            and create_time between #{beginTime} and #{endTime}
+        </if>
+    </select>
+
+    <delete id="deleteLog">
+        delete from live_sys_log limit #{maxCount};
+    </delete>
+</mapper>

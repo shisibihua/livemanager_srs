@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honghe.livemanager.dao.LiveConfigDao">
+  <resultMap id="BaseResultMap" type="com.honghe.livemanager.entity.LiveConfig">
+    <id column="live_config_id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="app_id" jdbcType="VARCHAR" property="appid" />
+    <result column="bizid" jdbcType="VARCHAR" property="bizid" />
+    <result column="secret_id" jdbcType="VARCHAR" property="secretId" />
+    <result column="secret_key" jdbcType="VARCHAR" property="secretKey" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="push_secret_key" jdbcType="VARCHAR" property="pushSecretKey" />
+    <result column="api_authentication_key" jdbcType="VARCHAR" property="apiAuthenticationKey" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    live_config_id, name, app_id, bizid, create_time, push_secret_key, api_authentication_key,secret_id,secret_key
+  </sql>
+  <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from live_config
+    where live_config_id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from live_config
+  </select>
+  <delete id="deleteById" parameterType="java.lang.Integer">
+    delete from live_config
+    where live_config_id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="add" parameterType="com.honghe.livemanager.entity.LiveConfig">
+    insert into live_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        live_config_id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="appid != null">
+        app_id,
+      </if>
+      <if test="bizid != null">
+        bizid,
+      </if>
+      <if test="pushSecretKey != null">
+        push_secret_key,
+      </if>
+      <if test="apiAuthenticationKey != null">
+        api_authentication_key,
+      </if>
+      <if test="secretKey != null">
+        secret_key,
+      </if>
+      <if test="secretId != null">
+        secret_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="appid != null">
+        #{appid,jdbcType=VARCHAR},
+      </if>
+      <if test="bizid != null">
+        #{bizid,jdbcType=VARCHAR},
+      </if>
+      <if test="pushSecretKey != null">
+        #{pushSecretKey,jdbcType=VARCHAR},
+      </if>
+      <if test="apiAuthenticationKey != null">
+        #{apiAuthenticationKey,jdbcType=VARCHAR},
+      </if>
+      <if test="secretKey != null">
+        #{secretKey,jdbcType=VARCHAR},
+      </if>
+      <if test="secretId != null">
+        #{secretId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.honghe.livemanager.entity.LiveConfig">
+    update live_config
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="appid != null">
+        app_id = #{appid,jdbcType=VARCHAR},
+      </if>
+      <if test="bizid != null">
+        bizid = #{bizid,jdbcType=VARCHAR},
+      </if>
+      <if test="pushSecretKey != null">
+        push_secret_key = #{pushSecretKey,jdbcType=VARCHAR},
+      </if>
+      <if test="apiAuthenticationKey != null">
+        api_authentication_key = #{apiAuthenticationKey,jdbcType=VARCHAR},
+      </if>
+      <if test="secretKey != null">
+        secret_key = #{secretKey,jdbcType=VARCHAR},
+      </if>
+      <if test="secretId != null">
+        secret_id = #{secretId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where live_config_id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

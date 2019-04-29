@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honghe.livemanager.dao.LiveHistoryDao">
+  <resultMap id="BaseResultMap" type="com.honghe.livemanager.entity.LiveHistory">
+    <result column="live_history_d_id" jdbcType="INTEGER" property="liveHistoryDId" />
+    <result column="create_date" jdbcType="DATE" property="createDate" />
+    <result column="time_point" jdbcType="TIME" property="timePoint" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="viewers_number" jdbcType="INTEGER" property="viewersNumber" />
+    <result column="pic_count" jdbcType="INTEGER" property="picCount" />
+    <result column="traffic_value" jdbcType="REAL" property="trafficValue" />
+    <result column="live_count" jdbcType="INTEGER" property="liveCount" />
+    <result column="school_name" jdbcType="VARCHAR" property="schoolName" />
+  </resultMap>
+  <insert id="insert" parameterType="com.honghe.livemanager.entity.LiveHistory">
+    insert into live_history_d (live_history_d_id, create_date, time_point, 
+      create_time, viewers_number, pic_count, 
+      traffic_value, live_count)
+    values (#{liveHistoryDId,jdbcType=INTEGER}, #{createDate,jdbcType=DATE}, #{timePoint,jdbcType=TIME}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{viewersNumber,jdbcType=INTEGER}, #{picCount,jdbcType=INTEGER},
+      #{trafficValue,jdbcType=INTEGER}, #{liveCount,jdbcType=INTEGER})
+  </insert>
+
+
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into live_history_d ( create_date, time_point,
+     viewers_number, pic_count,traffic_value, live_count) values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.createDate,jdbcType=DATE}, #{item.timePoint,jdbcType=TIME},
+      #{item.viewersNumber,jdbcType=INTEGER}, #{item.picCount,jdbcType=INTEGER},
+      #{item.trafficValue,jdbcType=INTEGER}, #{item.liveCount,jdbcType=INTEGER})
+    </foreach>
+  </insert>
+  <insert id="insertSelective" parameterType="com.honghe.livemanager.entity.LiveHistory">
+    insert into live_history_d
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="liveHistoryDId != null">
+        live_history_d_id,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="timePoint != null">
+        time_point,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="viewersNumber != null">
+        viewers_number,
+      </if>
+      <if test="picCount != null">
+        pic_count,
+      </if>
+      <if test="trafficValue != null">
+        traffic_value,
+      </if>
+      <if test="liveCount != null">
+        live_count,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="liveHistoryDId != null">
+        #{liveHistoryDId,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=DATE},
+      </if>
+      <if test="timePoint != null">
+        #{timePoint,jdbcType=TIME},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="viewersNumber != null">
+        #{viewersNumber,jdbcType=INTEGER},
+      </if>
+      <if test="picCount != null">
+        #{picCount,jdbcType=INTEGER},
+      </if>
+      <if test="trafficValue != null">
+        #{trafficValue,jdbcType=INTEGER},
+      </if>
+      <if test="liveCount != null">
+        #{liveCount,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="selectCountByDate" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select
+    <if test="dataType==0">
+         live_count,
+    </if>
+    <if test="dataType==1">
+        traffic_value,
+    </if>
+    <if test="dataType==2">
+        viewers_number,
+    </if>
+    <if test="dataType==3">
+        pic_count,
+    </if>
+    create_date from live_history_d WHERE  create_date BETWEEN #{beginDate} AND #{endDate}
+  </select>
+</mapper>

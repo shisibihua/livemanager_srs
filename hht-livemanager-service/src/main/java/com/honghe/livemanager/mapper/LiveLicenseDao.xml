@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honghe.livemanager.dao.LiveLicenseDao">
+  <resultMap id="BaseResultMap" type="com.honghe.livemanager.entity.LiveLicense">
+    <id column="live_license_id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="contact_number" jdbcType="VARCHAR" property="contactNumber" />
+    <result column="contact" jdbcType="VARCHAR" property="contact" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
+    <result column="city_id" jdbcType="INTEGER" property="cityId" />
+    <result column="province_id" jdbcType="INTEGER" property="provinceId" />
+    <result column="county_id" jdbcType="INTEGER" property="countyId" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="license_code" jdbcType="VARCHAR" property="licenseCode" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    live_license_id, name, contact_number, contact, create_time, status, begin_time, 
+    end_time, license_code,province_id,county_id,city_id,remark
+  </sql>
+  <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from live_license
+    where live_license_id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from live_license
+    where name = #{name,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByEndDate" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from live_license
+    where end_time &lt;= now()
+  </select>
+
+
+
+  <select id="selectByLicenseCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from live_license
+    where license_code = #{licenseCode,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from live_license
+    <where>
+    <if test="key != null">
+      name like concat(concat('%',#{key}),'%')
+    </if>
+
+    <if test="beginTime != null">
+      and begin_time &gt; #{beginTime}
+    </if>
+    <if test="endTime != null">
+      and end_time &lt; #{endTime}
+    </if>
+    </where>
+    order by create_time desc limit #{start},#{pageSize};
+  </select>
+  <select id="countSelectByPage" parameterType="java.util.Map" resultType="java.lang.Integer">
+    select count(0) from live_license
+    <where>
+      <if test="key != null">
+        (license_code LIKE  concat(concat('%',#{key}),'%') or name like concat(concat('%',#{key}),'%'))
+      </if>
+
+      <if test="beginTime != null">
+        and begin_time &gt; #{beginTime}
+      </if>
+      <if test="endTime != null">
+        and end_time &lt; #{endTime}
+      </if>
+    </where>
+</select>
+
+  <delete id="deleteById" parameterType="java.lang.Integer">
+    delete from live_license
+    where live_license_id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="add" useGeneratedKeys="true" keyProperty="id" parameterType="com.honghe.livemanager.entity.LiveLicense">
+    insert into live_license
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        live_license_id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="contactNumber != null">
+        contact_number,
+      </if>
+      <if test="contact != null">
+        contact,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="beginTime != null">
+        begin_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="licenseCode != null">
+        license_code,
+      </if>
+      <if test="provinceId != null">
+        province_id,
+      </if>
+      <if test="cityId != null">
+        city_id,
+      </if>
+      <if test="countyId != null">
+        county_id,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="contactNumber != null">
+        #{contactNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null">
+        #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="beginTime != null">
+        #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="licenseCode != null">
+        #{licenseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceId != null">
+        #{provinceId,jdbcType=INTEGER},
+      </if>
+      <if test="cityId != null">
+        #{cityId,jdbcType=INTEGER},
+      </if>
+      <if test="countyId != null">
+        #{countyId,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.honghe.livemanager.entity.LiveLicense">
+    update live_license
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="contactNumber != null">
+        contact_number = #{contactNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null">
+        contact = #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="beginTime != null">
+        begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="licenseCode != null">
+        license_code = #{licenseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceId != null">
+        province_id=#{provinceId,jdbcType=INTEGER},
+      </if>
+      <if test="cityId != null">
+        city_id=#{cityId,jdbcType=INTEGER},
+      </if>
+      <if test="countyId != null">
+        county_id=#{countyId,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark=#{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where live_license_id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

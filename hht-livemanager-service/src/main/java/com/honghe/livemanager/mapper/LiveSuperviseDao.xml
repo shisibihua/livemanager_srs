@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.honghe.livemanager.dao.LiveSuperviseDao">
+    <resultMap id="BaseResultMap" type="com.honghe.livemanager.entity.LiveSupervise">
+        <id column="live_supervise_id" jdbcType="INTEGER" property="superviseId" />
+        <result column="img" jdbcType="VARCHAR" property="img" />
+        <result column="stream_code" jdbcType="VARCHAR" property="streamCode" />
+        <result column="screenshot_time" jdbcType="TIMESTAMP" property="screenShotTime" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        live_supervise_id,img,stream_code,screenshot_time,create_time
+    </sql>
+
+    <insert id="add" parameterType="com.honghe.livemanager.entity.LiveSupervise" keyProperty="superviseId" useGeneratedKeys="true">
+        insert into live_supervise(img,stream_code,screenshot_time,create_time)
+        values(
+            #{img},
+            #{streamCode},
+            #{screenShotTime},
+            #{createTime}
+        )
+    </insert>
+    <select id="getLiveSuperviseListByPage" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from live_supervise
+        order by create_time desc
+        <if test="pageFlag">
+            limit #{start},#{pageSize}
+        </if>
+    </select>
+    <select id="getCount" resultType="java.lang.Integer">
+        select count(*) from live_supervise
+    </select>
+</mapper>

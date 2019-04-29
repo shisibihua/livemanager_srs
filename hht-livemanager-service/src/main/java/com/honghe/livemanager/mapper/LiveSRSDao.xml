@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.honghe.livemanager.cloud.srs.dao.LiveSRSDao">
+
+    <insert id="insertStream">
+        insert into live_srs (stream_code,client_id,stream_id,vhost_id)
+        values(
+            #{streamCode},
+            #{clientId},
+            #{streamId},
+            #{vHostId}
+        )
+    </insert>
+
+    <select id="getClientId" parameterType="java.lang.String" resultType="int">
+        select client_id
+        from live_srs
+        where stream_code=#{streamCode}
+        ORDER BY live_srs_id DESC LIMIT 1
+    </select>
+
+    <select id="getStreamId" parameterType="java.lang.String" resultType="int">
+        select stream_id
+        from live_srs
+        where stream_code=#{streamCode}
+        ORDER BY live_srs_id DESC LIMIT 1
+    </select>
+
+    <select id="getVHostId" parameterType="java.lang.String" resultType="int">
+        select vhost_id
+        from live_srs
+        where stream_code=#{streamCode}
+        ORDER BY live_srs_id DESC LIMIT 1
+    </select>
+
+    <select id="getLiveIdByTime" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select live_id
+        from live_program
+        where stream_code=#{streamCode} and is_del=0 and end_time >= #{dateTime}
+    </select>
+
+</mapper>

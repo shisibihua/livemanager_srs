@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honghe.livemanager.dao.LiveLicenseATTDao">
+  <resultMap id="BaseResultMap" type="com.honghe.livemanager.entity.LiveLicenseATT">
+    <id column="live_auth_attachment_id" jdbcType="INTEGER" property="id" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="live_license_id" jdbcType="INTEGER" property="licenseId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    live_auth_attachment_id, path, create_time,live_license_id,name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from live_license_attachment
+    where live_auth_attachment_id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByLicenseId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from live_license_attachment
+    where live_license_id = #{licenseId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteById" parameterType="java.lang.Integer">
+    delete from live_license_attachment
+    where live_auth_attachment_id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByLicenseId" parameterType="java.lang.Integer">
+    delete from live_license_attachment
+    where live_license_id = #{licenseId,jdbcType=INTEGER}
+  </delete>
+  <insert id="add" parameterType="com.honghe.livemanager.entity.LiveLicenseATT">
+    insert into live_license_attachment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        live_auth_attachment_id,
+      </if>
+      <if test="path != null">
+        path,
+      </if>
+      <if test="licenseId != null">
+        live_license_id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+        <if test="id != null">
+          #{id,jdbcType=INTEGER},
+        </if>
+        <if test="path != null">
+          #{path,jdbcType=VARCHAR},
+        </if>
+        <if test="licenseId != null">
+          #{licenseId,jdbcType=VARCHAR},
+        </if>
+        <if test="name != null">
+          #{name,jdbcType=VARCHAR},
+        </if>
+    </trim>
+  </insert>
+  <insert id="addBatch" parameterType="java.util.List">
+    insert into live_license_attachment
+    (live_auth_attachment_id,path,live_license_id,name )
+    VALUES
+      <foreach collection="list" item="item" separator=",">
+        (#{item.id,jdbcType=INTEGER},
+        #{item.path,jdbcType=VARCHAR},
+        #{item.licenseId,jdbcType=VARCHAR},
+        #{item.name,jdbcType=VARCHAR})
+      </foreach>
+  </insert>
+</mapper>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.honghe.livemanager.dao.LiveUserDao">
+    <resultMap id="BaseResultMap" type="com.honghe.livemanager.entity.LiveUser">
+        <id column="live_user_id" jdbcType="INTEGER" property="userId" />
+        <result column="name" jdbcType="VARCHAR" property="userName" />
+        <result column="pwd" jdbcType="VARCHAR" property="userPwd" />
+        <result column="real_name" jdbcType="VARCHAR" property="realName" />
+        <result column="gender" jdbcType="INTEGER" property="gender" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+        <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="user_type_id" jdbcType="INTEGER" property="userType" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    </resultMap>
+    <sql id="Base_Column_List">
+         name,pwd,real_name,gender,email,mobile,status,user_type_id,create_time
+    </sql>
+
+    <sql id="Base_Property_List">
+        user.live_user_id as userId,user.name as userName,user.pwd as userPwd,user.real_name as realName,user.gender,
+        user.email,user.mobile,user.status,user.user_type_id as userType,user.create_time as creatTime
+    </sql>
+
+    <insert id="addUser" parameterType="com.honghe.livemanager.entity.LiveUser" useGeneratedKeys="true" keyProperty="userId">
+        insert into live_user(<include refid="Base_Column_List"/>)
+        values(
+            #{userName},
+            #{userPwd},
+            #{realName},
+            #{gender},
+            #{email},
+            #{mobile},
+            #{status},
+            #{userType},
+            #{createTime}
+        )
+    </insert>
+
+    <insert id="addBatchUser" useGeneratedKeys="true" keyProperty="userId">
+        insert into live_user(<include refid="Base_Column_List"/>)
+        values
+        <foreach index="index" item="item" collection="list" separator=",">
+            (#{item.userName},
+            #{item.userPwd},
+            #{item.realName},
+            #{item.gender},
+            #{item.email},
+            #{item.mobile},
+            #{item.status},
+            #{item.userType},
+            #{item.createTime})
+        </foreach>
+    </insert>
+
+    <select id="getUserByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select <include refid="Base_Property_List"/>
+        from live_user user
+        left join live_user_type type
+        on user.user_type_id=type.live_user_type_id
+        where user.name=#{loginName} and user.status=1
+    </select>
+
+    <select id="getUserById" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select <include refid="Base_Property_List"/>
+        from live_user user
+        left join live_user_type type
+        on user.user_type_id=type.live_user_type_id
+        where user.live_user_id=#{userId} and user.status=1
+    </select>
+
+    <update id="updateLoginPwd" parameterType="java.lang.String">
+        update live_user set pwd=#{loginPwd}
+        where live_user_id=#{userId}
+    </update>
+
+    <update id="deleteUserById" parameterType="java.lang.String">
+        update live_user set status=#{status}
+        where live_user_id=#{userId}
+    </update>
+</mapper>

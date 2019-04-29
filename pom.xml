@@ -1,0 +1,481 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>honghe</groupId>
+    <artifactId>hht-livemanager-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0</version>
+
+    <url>http://maven.apache.org</url>
+    <modules>
+        <module>hht-livemanager-common</module>
+        <module>hht-livemanager-service</module>
+    </modules>
+
+    <properties>
+        <!--项目类依赖-->
+        <livemanager_version>1.0.0</livemanager_version>
+        <!--定时任务-->
+        <quartz_version>2.2.1</quartz_version>
+        <!--spring cloud-->
+        <archaius>0.7.5</archaius>
+        <spring_boot>1.5.7.RELEASE</spring_boot>
+        <!-- Common libs -->
+        <javaee_version>7.0</javaee_version>
+        <jackson_version>2.7.4</jackson_version>
+        <mybatis_spring_version>1.3.0</mybatis_spring_version>
+        <mybatis_version>3.4.2</mybatis_version>
+        <druid_version>1.0.15</druid_version>
+        <spring_version>4.3.7.RELEASE</spring_version>
+        <javassist_version>3.20.0-GA</javassist_version>
+        <httpclient_version>4.5.2</httpclient_version>
+        <hessian_lite_version>3.2.1-fixed-2</hessian_lite_version>
+        <xstream_version>1.4.1</xstream_version>
+        <fastjson_version>1.2.31</fastjson_version>
+        <sorcerer_version>0.8</sorcerer_version>
+        <servlet_version>3.1.0</servlet_version>
+        <jsoup_version>1.8.3</jsoup_version>
+        <commons-langs>3.4</commons-langs>
+        <!--soap-->
+        <axis_version>1.4</axis_version>
+        <rpc_version>1.1.1</rpc_version>
+        <!--webservice依赖-->
+        <commons_dis_version>0.2</commons_dis_version>
+        <commons_log_version>1.1.1</commons_log_version>
+        <wsdl4j_version>1.6.2</wsdl4j_version>
+        <!--xml-->
+        <dom4j_version>1.6.1</dom4j_version>
+        <!-- Log libs -->
+        <slf4j_version>1.7.25</slf4j_version>
+        <jcl_version>1.1</jcl_version>
+        <log4j_version>1.2.16</log4j_version>
+        <!-- Test libs -->
+        <junit_version>4.12</junit_version>
+        <jsonAssert_version>1.2.3</jsonAssert_version>
+        <jsonpath_version>2.2.0</jsonpath_version>
+        <gson_version>2.8.0</gson_version>
+        <ant_version>1.9.6</ant_version>
+        <quartz_version>2.2.1</quartz_version>
+        <poi_version>3.17</poi_version>
+
+        <!-- Build args -->
+        <argline>-server -Xms64m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=128m -Dfile.encoding=UTF-8
+            -Djava.net.preferIPv4Stack=true
+        </argline>
+        <skip_maven_deploy>false</skip_maven_deploy>
+        <updateReleaseInfo>true</updateReleaseInfo>
+        <project.build.sourceEncoding>${file_encoding}</project.build.sourceEncoding>
+
+
+        <!-- for maven compiler plugin -->
+        <maven_compiler_plugin_version>3.5.1</maven_compiler_plugin_version>
+
+        <file_encoding>UTF-8</file_encoding>
+
+        <version>${fileupload_version}</version>
+        <!--mysql-->
+        <mysql_version>5.1.30</mysql_version>
+        <!--上传组件-->
+        <fileupload_version>1.3.1</fileupload_version>
+
+        <jodd_version>3.2.6</jodd_version>
+
+        <ooxml_version>3.15</ooxml_version>
+        <commonsio_version>2.4</commonsio_version>
+        <commonscodec_version>1.9</commonscodec_version>
+        <!--apache-->
+        <commons_bean_version>1.9.3</commons_bean_version>
+        <commons_httpclient_version>3.1</commons_httpclient_version>
+        <schemas_version>3.15</schemas_version>
+
+    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <!--项目内依赖-->
+            <dependency>
+                <groupId>honghe</groupId>
+                <artifactId>hht-livemanager-common</artifactId>
+                <version>${livemanager_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>honghe</groupId>
+                <artifactId>hht-livemanager-service</artifactId>
+                <version>${livemanager_version}</version>
+            </dependency>
+            <!--项目依赖结束-->
+
+            <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring_boot}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <version>${spring_boot}</version>
+                <scope>test</scope>
+            </dependency>
+            <!--spring cloud-->
+            <!-- https://mvnrepository.com/artifact/com.netflix.archaius/archaius-core -->
+            <dependency>
+                <groupId>org.jodd</groupId>
+                <artifactId>jodd</artifactId>
+                <version>${jodd_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${ooxml_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netflix.archaius</groupId>
+                <artifactId>archaius-core</artifactId>
+                <version>${archaius}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-jetty</artifactId>
+                <version>${spring_boot}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-aop</artifactId>
+                <version>${spring_boot}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-maven-plugin -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>1.4.0.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-devtools</artifactId>
+                <version>${spring_boot}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-langs}</version>
+            </dependency>
+            <!--安全校验-->
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-spring</artifactId>
+                <version>1.3.2</version>
+            </dependency>
+            <!-- 测试sdk，正式发布删除 -->
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit_version}</version>
+                <!-- 表示开发的时候引入，发布的时候不会加载此包 -->
+                <scope>test</scope>
+            </dependency>
+            <!-- spring核心包 -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${spring_version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-oxm</artifactId>
+                <version>${spring_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
+                <version>${spring_version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jdbc</artifactId>
+                <version>${spring_version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${spring_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aop</artifactId>
+                <version>${spring_version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>${spring_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring_version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${spring_version}</version>
+            </dependency>
+            <!-- mybatis核心包 -->
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>${mybatis_version}</version>
+            </dependency>
+            <!-- mybatis/spring包 -->
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis-spring</artifactId>
+                <version>${mybatis_spring_version}</version>
+            </dependency>
+            <!-- 导入java ee jar 包 -->
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-api</artifactId>
+                <version>${javaee_version}</version>
+            </dependency>
+            <!-- 导入Mysql数据库链接jar包 -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql_version}</version>
+            </dependency>
+            <!-- 导入dbcp的jar包，用来在applicationContext.xml中配置数据库 -->
+            <!--读取配置文件-->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid_version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>${commons_bean_version}</version>
+            </dependency>
+
+
+            <!-- 日志文件管理包 -->
+            <!-- log start -->
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${log4j_version}</version>
+            </dependency>
+
+
+            <!-- 格式化对象，方便输出日志 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson_version}</version>
+            </dependency>
+
+            <!--由于可能冲突，下面包解决log4j冲突-->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j_version}</version>
+            </dependency>
+            <!-- log end -->
+
+
+            <!--升级spring 4.2.5 需要加依赖包 -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson_version}</version>
+            </dependency>
+
+            <!-- 上传组件包 -->
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>${fileupload_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commonsio_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${commonscodec_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${servlet_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>${jsoup_version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
+            <dependency>
+                <groupId>dom4j</groupId>
+                <artifactId>dom4j</artifactId>
+                <version>${dom4j_version}</version>
+            </dependency>
+            <!--用于测试-->
+            <!-- https://mvnrepository.com/artifact/org.skyscreamer/jsonassert -->
+            <dependency>
+                <groupId>org.skyscreamer</groupId>
+                <artifactId>jsonassert</artifactId>
+                <version>${jsonAssert_version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path -->
+            <dependency>
+                <groupId>com.jayway.jsonpath</groupId>
+                <artifactId>json-path</artifactId>
+                <version>${jsonpath_version}</version>
+            </dependency>
+
+            <!--支持soap协议-->
+            <!-- https://mvnrepository.com/artifact/org.apache.axis/axis -->
+            <dependency>
+                <groupId>org.apache.axis</groupId>
+                <artifactId>axis</artifactId>
+                <version>${axis_version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/javax.xml.rpc/javax.xml.rpc-api -->
+            <dependency>
+                <groupId>javax.xml.rpc</groupId>
+                <artifactId>javax.xml.rpc-api</artifactId>
+                <version>${rpc_version}</version>
+            </dependency>
+            <!--end-->
+            <!--webService 依赖-->
+            <dependency>
+                <groupId>commons-discovery</groupId>
+                <artifactId>commons-discovery</artifactId>
+                <version>${commons_dis_version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${commons_log_version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/wsdl4j/wsdl4j -->
+            <dependency>
+                <groupId>wsdl4j</groupId>
+                <artifactId>wsdl4j</artifactId>
+                <version>${wsdl4j_version}</version>
+            </dependency>
+            <!--end-->
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson_version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant</artifactId>
+                <version>${ant_version}</version>
+            </dependency>
+            <!--定时任务-->
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz</artifactId>
+                <version>${quartz_version}</version>
+            </dependency>
+            <!-- 图片生成excel https://mvnrepository.com/artifact/org.apache.poi/poi -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${poi_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml-schemas</artifactId>
+                <version>${schemas_version}</version>
+            </dependency>
+        </dependencies>
+
+    </dependencyManagement>
+
+    <build>
+        <!--在src 下的xml-->
+
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>mapper/*.xml</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.18.1</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+        </plugins>
+
+    </build>
+
+
+</project>
